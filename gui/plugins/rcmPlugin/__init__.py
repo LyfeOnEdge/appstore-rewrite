@@ -1,0 +1,1 @@
+from gui.plugins.rcmPlugin.rcmPlugin import setup
