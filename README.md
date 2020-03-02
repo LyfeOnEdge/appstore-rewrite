@@ -81,6 +81,9 @@ One of the main goals of this app is to provide a homebrew management tool that 
 - The rest of the 4TU team for being gorgeous
 - CrafterPika
   - Helped me get the app working with the WiiU since I don't have a one.
+  - Helped with WiiUExploit plugin
 - Archbox
   - Fellow Turtle
   - Wii Testing
+- Circuit10
+  - HTML friend

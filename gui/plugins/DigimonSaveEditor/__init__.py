@@ -1,1 +1,0 @@
-from gui.plugins.DigimonSaveEditor.plugin import setup
