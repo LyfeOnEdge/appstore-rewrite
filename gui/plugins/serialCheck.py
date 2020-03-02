@@ -6,6 +6,7 @@ import urllib.request
 from gui.plugins import basePlugin
 from gui.widgets import basePage
 from appstore import Appstore
+from asyncthreader import threader
 
 ABOUT = "~Switch Serial Number Checker~\nOriginal Script by Anthony Da Mota\n\nChecks your Switch's serial number to see if is patched."
 
@@ -39,9 +40,12 @@ class serialPage(basePage.BasePage):
 		self.results_variable.set(self.plugin.check(self.entry_box.get()))
 
 class serialCheckPlugin(basePlugin.BasePlugin):
-	def __init__(self, app, container, serials):
+	def __init__(self, app, container):
 		basePlugin.BasePlugin.__init__(self, app, "Switch Serial Checker", container)
-		self.serials = serials
+		threader.do_async(self.get_serials)
+
+	def get_serials(self):
+		self.serials = json.loads(download_object("https://damota.me/ssnc/serials.json"))
 
 	def get_pages(self):
 		return [serialPage(self.app, self.container, self)]
@@ -82,7 +86,4 @@ class serialCheckPlugin(basePlugin.BasePlugin):
 
 def setup(app, container):
 	print("Setting up Switch Serial Checker...")
-	print("Getting updated serials.json")
-	serials = json.loads(download_object("https://damota.me/ssnc/serials.json"))
-	print("Loaded serial.json")
-	return serialCheckPlugin(app, container, serials)
+	return serialCheckPlugin(app, container)

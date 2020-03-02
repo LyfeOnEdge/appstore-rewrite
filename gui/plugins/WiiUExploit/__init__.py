@@ -1,0 +1,1 @@
+from gui.plugins.WiiUExploit.plugin import setup

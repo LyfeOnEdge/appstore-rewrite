@@ -41,8 +41,10 @@ statussize = buttontextheight
 progressbarheight = 80
 yesnopagefooterheight = 70
 sortdropdownwidth = 150
-detailspagemultiplier = 70
+details_item_y_multiplier = 60
 scrollbarwidth = 20
+details_page_image_fraction = 0.35
+detais_page_title_height = 15
 
 #Fonts
 #Normal Text

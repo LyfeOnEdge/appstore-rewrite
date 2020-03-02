@@ -16,14 +16,16 @@ from asyncthreader import threader
 class window(tk.Tk):
 	def __init__(self, args, geometry):
 		tk.Tk.__init__(self)
-		self.args = args
+		self.configure(background = style.primary_color)
 		self.geometry(geometry)
+		self.args = args
 		self.frame_titles = None
 		self.current_frame = None
 		self.last_selection = None
 		self.path = None
 		self.pagelist = []
 		self.has_update = None
+		self.plugins = []
 		# self.resizable(False, False)
 
 		self.detail_page = DetailPage(self)
@@ -118,8 +120,8 @@ class window(tk.Tk):
 		global __plugins__
 		if not __plugins__:
 			return
-		pagelist = []
 		
+		pluginlist = []
 		def load_plugin(plugin):
 			print("==============================")
 			print(f"Loading plugin at {plugin}")
@@ -128,7 +130,11 @@ class window(tk.Tk):
 			spec.loader.exec_module(p)
 			print(f"Running plugin setup.")
 			plug = p.setup(self, self.container)
+			self.plugins.append(plug)
 			print(f"Plugin - {plug.name}")
+			pluginlist.append(plug)
+
+		def load_pages(plug):
 			pages = plug.get_pages()
 			if pages:
 				numpages = len(pages)
@@ -142,9 +148,16 @@ class window(tk.Tk):
 
 		for plugin in __plugins__:
 			try:
-				load_plugin(plugin)
+				load_plugin(plugin) #Joins all the plugin setup threads before loading .
 			except Exception as e:
 				print(f"Exception loading plugin {plugin} - {e}")
+
+		threader.do_group()
+		threader.join_group()
+
+		pagelist = []
+		for plug in pluginlist:
+			self.load_pages(plug.get_pages())
 
 		print("==============================")
 		print("TODO: add 'requirements' attribute to plugin to verify with importlib that they all exist to avoid a crash caused by a plugin failing to import")

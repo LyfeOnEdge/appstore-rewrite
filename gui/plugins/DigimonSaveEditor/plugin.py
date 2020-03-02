@@ -234,7 +234,4 @@ def main(filepath: str, game: int, cheat: int, sout):
     return ret
 
 def setup(app, container):
-    print('==== Digimon Story Cyber Sleuth: Complete Edition Save Editor ====')
-    print('Original script by AnalogMan')
-    print('Plugin by Lyfe')
     return Plugin(app, container)

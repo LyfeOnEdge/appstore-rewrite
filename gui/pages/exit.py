@@ -23,6 +23,9 @@ class exitPage(tk.Frame):
 
 	def on_yes(self):
 		print("Exiting...")
+		for plugin in self.app.plugins:
+			plugin.exit()
+			
 		if self.exit_callback:
 			self.exit_callback()
 		sys.exit()
