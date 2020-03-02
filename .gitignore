@@ -3,3 +3,9 @@ cache/*
 tools/*
 downloads/*
 build.zip
+
+
+gui/plugins/*
+!gui/plugins/basePlugin
+!gui/plugins/README.md
+!gui/plugins/__init__.py
