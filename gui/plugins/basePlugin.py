@@ -1,3 +1,5 @@
+# See main readme for info on plugins.
+
 class BasePlugin:
 	def __init__(self, app, name, container):
 		self.name = name

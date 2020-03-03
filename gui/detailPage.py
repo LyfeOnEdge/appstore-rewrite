@@ -40,7 +40,7 @@ class DetailPage(themedFrame.ThemedFrame):
         self.column_body = themedFrame.ThemedFrame(self.column, background = style.primary_color)
         self.column_body.place(relwidth=1, relheight=1)
 
-        self.column_title = themedLabel.ThemedLabel(self.column_body,"",anchor="w",font=style.mediumboldtext, foreground = style.primary_text_color, background = style.primary_color)
+        self.column_title = themedLabel.ThemedLabel(self.column_body,"",anchor="w",font=style.smallboldtext, foreground = style.primary_text_color, background = style.primary_color)
         self.column_title.place(x = style.offset, width = - style.offset, rely = 0, relwidth = 1, height = style.detais_page_title_height)
 
         self.column_author = themedLabel.ThemedLabel(self.column_body,"",anchor="w",font=style.smalltext, foreground = style.detail_page_label_color, background = style.primary_color)

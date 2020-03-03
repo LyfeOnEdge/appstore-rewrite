@@ -6,6 +6,8 @@ build.zip
 
 
 gui/plugins/*
-!gui/plugins/basePlugin
+!gui/plugins/basePlugin.py
 !gui/plugins/README.md
 !gui/plugins/__init__.py
+!gui/plugins/pluginManager.py
+!gui/plugins/updater

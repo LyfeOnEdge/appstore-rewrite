@@ -1,33 +1,34 @@
-# About
-Appstore-workbench - A wip homebrew package-management tool for Nintendo Switch, WiiU, and Wii users
-
-[![Appstore-workbench](https://raw.githubusercontent.com/LyfeOnEdge/appstore-workbench/master/docu/main.png)]()
+# Appstore Workbench
+[![Appstore-workbench](https://cdn.discordapp.com/attachments/616331814021103674/684187810353512488/unknown.png)]()
 
 [![License](https://img.shields.io/badge/License-GPLv3-blue.svg)]() [![Releases](https://img.shields.io/github/downloads/LyfeOnEdge/appstore-workbench/total.svg)]() [![LatestVer](https://img.shields.io/github/release-pre/LyfeOnEdge/appstore-workbench.svg)]() 
 
 ![[Brew Tools](https://discord.gg/de7tdqe)](https://github.com/LyfeOnEdge/appstore-workbench/blob/master/docu/SwitchToolsDiscordBanner.png?raw=true)
-
-# About
-A desktop gui for the Homebrew Appstore written in python.
-
-Uses the switchbru/4TU team's and brewtools.dev (LyfeOnEdge's homebrew group) sites as backends for image and package downloads.
-
-One of the main goals of this app is to provide a homebrew management tool that doesn't require target consoles to have access to the internet. Especially useful for people who always keep their console in airplane mode/offline. 
+### What is it?
+Appstore Workbench began as an attempt to provide a desktop alternative to 4TU's Homebrew Appstore, but moved to using a plugin system to provide more tools than just homebrew management, serving as a basis to many projects that would otherwise not warrant a gui. Appstore Workbench is welcome to community plugin submissions for any console. Appstore Workbench is a Mac/Windows/Linux compatible python app.
 
 #### Features:
-- Homebrew for both WiiU and Nintendo Switch
-- Dynamic Search
-- Categories
-- Compatible with the Homebrew Appstore package manager
-- Easily open project pages
-- Threaded operations mean the app stays responsive with big downloads
-- Scalable window
+- Homebrew plugins for Wii, WiiU, and Nintendo Switch. Over 500 packages
+  - Homebrew management tool that doesn't require target platforms to have access to the internet
+  - Dynamic Search
+  - Categories
+  - Compatible with the Homebrew Appstore package manager
+  - Easily open project pages in browser
+  - Threaded operations mean the app stays responsive with big downloads
+- Plugin Support
+- Scalable Window
 
-# Requirements:
+#### Notable plugins:
+- Nintendo Switch, WiiU, and Wii homebrew
+- Switch Serial Number Checker
+- Switch Payload Injector
+- WiiU Web Exploit Hoster
+
+#### Requirements:
     Works on: macOS, Windows, Linux
     Python 3.6 or greater
+    Dependencies vary by OS, see below.
 
-# How to use:
 ##### Windows:
 - Extract appstore-workbench.zip
 - Install [python](https://www.python.org/downloads/release/python-373/)
@@ -53,25 +54,114 @@ One of the main goals of this app is to provide a homebrew management tool that 
   - `sudo apt install python3 python3-pip python3-tk python3-pil.imagetk`
 - If you don't know how to do this you should probably be using Windows.
 
-## Trouble Shooting:
+## Troubleshooting:
 ##### Mac:
 - Error:
   - ```ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1056)```
   - Solution: Macintosh HD > Applications > Python3.6 folder (or whatever version of python you're using) > double click on "Install Certificates.command" file
 
-# How to use:
-- Connect your SD card to your computer
-- Start the app
-- If you are using a console other than the Nintendo Switch go to the settings menu and select you console and restart the app for your changes to take effect.
-- Click the "Select SD root" button
-- A file dialog should appear, select the root of your SD card
-- Select an app you'd like to see more about
-- Click install to have the app properly installed on to the SD card
-- When you're done, unmount your SD card, put it in your homebrewed Nintendo Switch or WiiU, and reboot.
+## Plugin System
 
-### Troubleshooting:
-- If you are getting errors about tkinter or pillow look above at the setup instructions for your OS
-- Image download errors are to be expected, please do not report them.
+###  Plugins
+Plugins form the basis of appstore-workbench. On it's own appstore-workbench serves only to download plugins. This allows appstore-workbench to serve a variety of consoles without becoming bloated - being able to be tailored to the user's needs.
+Plugins can either run in the background, add pages, or both. Pages are derived from tkinter tk.Frame objects so you can use them to build anything you could build in a normal tkinter Frame.
+
+##### Example Usage:
+```py
+from gui.plugins import basePlugin
+import os
+
+class Plugin(basePlugin.BasePlugin):
+  def __init__(self, app, container):
+    super().__init__(self, app, "NAME", container)
+    self.app = app #gui object
+    self.container = container #Parent frame for pages, classed from tk.Frame()
+    #Declare any values you want available throughout your pages here
+
+  def get_pages(self):
+    #If your plugin does more than run in the background,
+    #this function will need to return a list of pages
+    #derived from 
+    #See README section on 
+    return []
+
+  def exit(self):
+    #If your widgets needs to do things to exit gracefully
+    #you need to do them here.
+    pass
+
+#Setup function called on each plugin, must return object
+#derived from basePlugin.BasePlugin
+def setup(app, container):
+  #Do stuff you need done before the plugin loads here
+  return Plugin(app, container)
+```
+## Pages
+##### Example Usage:
+```py
+from gui.widgets import basePage
+import tkinter as tk #Basepage is derived from tk.Frame so tk widgets work
+import style #style.py is used to keep app colors and sizes consistent
+
+class Page(basePage.BasePage):
+    def __init__(self, app, container, plugin):
+        super().__init__(self, app, container, "NAME")
+        
+    about_label = tk.Label(self, 
+        text = "Hello!", 
+        background = style.primary_color, 
+        foreground = style.primary_text_color, 
+        font = style.smalltext
+      ).place(
+        relx = 0.5,
+        x = - 50,
+        width = 100,
+            rely = 0.5,
+            y = - 20
+            height = - 50 
+          )
+```
+## Threading
+Also included in this project is a worker thread tool I made
+that works with tkinter (calling threads from within the gui 
+normally doesn't work). Threads must be procedural (they can't)
+return something), but they are incredibly useful for updating
+elements of the gui without blocking everything else.
+##### Example Usage:
+```py
+from gui.widgets import basePage
+from asyncthreader import threader #Import thread
+
+class Page(basePage.BasePage):
+    def __init__(self, app, container, plugin):
+        super().__init__(self, app, container, "NAME")
+
+  #Let's say this gets called when a button on the page is pushed
+  def on_button_push(self):
+    #Calling something blocking here would freeze everything
+    #Instead call it as a thread
+    threader.do_async(self.load_big_file_async)
+    
+  def load_big_file_async(self):
+    #When called above by the threader anything here will run without blocking
+    pass
+```
+Additionally threads can be called with args:
+```py
+from asyncthreader import threader
+
+def callback(arg1, arg2, ...):
+  pass
+
+threader.do_async(callback, [arg1, ar2, ...])
+```
+
+## Libget
+### lib
+Appstore Workbench contains a python module for interacting with libget-style repos. It was written to be objective so multiple instances of it could be used at once, allowing the management of multiple consoles on the same sd card. This is useful in some cases, for example people using both WiiU and Wii (through vwii) homebrew. It also means the libget standard can be used locally for package management within the app, examples being payload injectors, and its the apps own plugin system.
+
+### Compatibility
+Appstore Workbench is mostly compatible with 4TU's Homebrew Appstore there are still a few small things to tweak like checking asset modes when updating.
 
 ## Special Thanks:
 - pwscind

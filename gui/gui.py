@@ -123,7 +123,6 @@ class window(tk.Tk):
 		
 		pluginlist = []
 		def load_plugin(plugin):
-			print("==============================")
 			print(f"Loading plugin at {plugin}")
 			spec = importlib.util.spec_from_file_location(os.path.basename(plugin)[:-3], plugin)
 			p = importlib.util.module_from_spec(spec)
@@ -159,7 +158,6 @@ class window(tk.Tk):
 		for plug in pluginlist:
 			self.load_pages(plug.get_pages())
 
-		print("==============================")
 		print("TODO: add 'requirements' attribute to plugin to verify with importlib that they all exist to avoid a crash caused by a plugin failing to import")
 		print("Done loading plugins.\n")
 		self.load_pages(pagelist)
