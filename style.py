@@ -1,15 +1,11 @@
 #Colors
 
-
-
 # primary_color = "#101010"
 # secondary_color = "#505050"
 primary_color = "#20232a"
 secondary_color = "#373940"
 primary_text_color = "#61dafb"
 secondary_text_color = "#6d6d6d"
-
-
 
 lg = "#acacac" #Light gray
 llg = "#cccccc" #Light Light gray

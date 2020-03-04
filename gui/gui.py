@@ -1,15 +1,9 @@
-import os
-import sys
-import importlib.util
+import os, sys, json, glob, importlib
 import tkinter as tk
-
-import style
+import style, config
 from .pages import __pages__
 from .detailPage import DetailPage
-from .plugins import __plugins__
 from .widgets import *
-
-from gui.widgets import scrollingWidgets
 from asyncthreader import threader
 
 #Frame handler, raises and pages in z layer,
@@ -117,24 +111,11 @@ class window(tk.Tk):
 		self.version = version_string
 
 	def load_plugins(self):
-		global __plugins__
-		if not __plugins__:
-			return
-		
-		pluginlist = []
-		def load_plugin(plugin):
-			print(f"Loading plugin at {plugin}")
-			spec = importlib.util.spec_from_file_location(os.path.basename(plugin)[:-3], plugin)
-			p = importlib.util.module_from_spec(spec)
-			spec.loader.exec_module(p)
-			print(f"Running plugin setup.")
-			plug = p.setup(self, self.container)
-			self.plugins.append(plug)
-			print(f"Plugin - {plug.name}")
-			pluginlist.append(plug)
+		"""Loads plugins at a given path"""
 
-		def load_pages(plug):
-			pages = plug.get_pages()
+		pagelist = []
+		def load_pages(plugin):
+			pages = plugin.get_pages()
 			if pages:
 				numpages = len(pages)
 				print(f"Adding {numpages} pages")
@@ -143,23 +124,45 @@ class window(tk.Tk):
 
 			pagelist.extend(pages)
 
-		print("\nLoading plugins.")
+		def get_plugins(plugins_path):
+			plugins = []
+			print(f"Searching for plugins at - {plugins_path}")
+			modules = glob.glob(os.path.join(plugins_path,"*"))
+			for m in modules:
+				if (os.path.isfile(m) and m.endswith('.py') and not m.endswith('__init__.py')):
+					plugins.append(m[1:])
+				elif os.path.isfile(os.path.join(m, "plugin.py")):
+					plugins.append(os.path.join(m, "plugin.py")[1:])
+			print(f"Found {len(plugins)} plugins:")
+			print(json.dumps(plugins, indent = 2))
+			return plugins
 
-		for plugin in __plugins__:
+		print("\n# Loading plugins.")
+		plugins = []
+		plugins_paths = ["./plugins", "./gui/plugins"]
+		# plugins_paths.extend(plugins_path_list)
+		for path in plugins_paths:
+			plugins.extend(get_plugins(path))
+		pluginlist = []
+		for plugin in plugins:
 			try:
-				load_plugin(plugin) #Joins all the plugin setup threads before loading .
+				print(f"Loading plugin at {plugin}")
+				plugin = plugin[:-3].replace("/", ".")[1:]
+				print(plugin)
+				m = importlib.import_module(plugin)	#Import plugin
+				plugin_object = m.setup(self, self.container) #Import lib and call setup to get plugin object
+				pluginlist.append(plugin_object)
 			except Exception as e:
 				print(f"Exception loading plugin {plugin} - {e}")
 
 		threader.do_group()
 		threader.join_group()
 
-		pagelist = []
-		for plug in pluginlist:
-			self.load_pages(plug.get_pages())
+		print("Loading plugin pages")
+		for plugin in pluginlist:
+			self.load_pages(plugin.get_pages())
 
-		print("TODO: add 'requirements' attribute to plugin to verify with importlib that they all exist to avoid a crash caused by a plugin failing to import")
-		print("Done loading plugins.\n")
+		print("# Done loading plugins.\n")
 		self.load_pages(pagelist)
 
 	def load_pages(self, pagelist):

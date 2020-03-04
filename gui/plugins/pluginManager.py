@@ -1,7 +1,4 @@
-from gui.plugins import basePlugin
-from gui.widgets import categoryPage
-from gui.widgets import themedFrame
-from gui.widgets import button
+from gui.widgets import basePlugin, categoryPage, themedFrame, button
 import os
 from appstore import Appstore
 import style

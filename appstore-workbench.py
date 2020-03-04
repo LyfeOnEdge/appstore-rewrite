@@ -36,7 +36,7 @@ try:
 except:
     sys.exit("Cannot start: Pillow module not installed, try `pip install Pillow` or consult the readme for more information.")
 
-folders_to_init = ["cache", "cache/json", "cache/images", "downloads", "tools"]
+folders_to_init = ["cache", "cache/json", "cache/images", "downloads", "tools", "plugins"]
 for folder in folders_to_init:
     if not os.path.isdir(folder):
         print(f"Initializing folder {folder}")
@@ -44,6 +44,11 @@ for folder in folders_to_init:
 
 #To be written if there is no config file
 config_default = """
+#If you have other plugins dirs add them here
+plugins_path_list = [
+    "./plugins",
+]
+
 #True / False
 keep_topmost = False
 

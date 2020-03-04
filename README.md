@@ -35,7 +35,7 @@ Appstore Workbench began as an attempt to provide a desktop alternative to 4TU's
   - You *must* restart your pc after installing python for the first time.
   - If you do a custom installation remember to install tcl/tk, add python to the path, and include pip
 - In a command prompt navigate to the dir you extracted the app to and type ```pip install -r requirements``` to install dependencies
-- Double-click appstoreworkbench.bat
+- Type `python appstore-workbench`
 
 ##### Macintosh:
 - Extract appstore-workbench.zip
@@ -43,7 +43,7 @@ Appstore Workbench began as an attempt to provide a desktop alternative to 4TU's
 - In a command prompt navigate to the dir you extracted the app to and type ```pip3 install -r requirements``` to install dependencies
   - If the file opens in a text reader, close the reader and right-click the file and open it with pylauncher
 - If this still doesn't work, install [python](https://www.python.org/downloads/release/python-373/)
-- To run the app: double-click unofficial-appstore.py
+- To run the app: double-click `appstore-workbench.py`
 
 ##### Linux:
 - Extract appstore-workbench.zip
@@ -53,6 +53,7 @@ Appstore Workbench began as an attempt to provide a desktop alternative to 4TU's
   - If you are missing dependencies do the following:
   - `sudo apt install python3 python3-pip python3-tk python3-pil.imagetk`
 - If you don't know how to do this you should probably be using Windows.
+- Finally type `python3 appstore-workbench.py`
 
 ## Troubleshooting:
 ##### Mac:
@@ -66,14 +67,30 @@ Appstore Workbench began as an attempt to provide a desktop alternative to 4TU's
 Plugins form the basis of appstore-workbench. On it's own appstore-workbench serves only to download plugins. This allows appstore-workbench to serve a variety of consoles without becoming bloated - being able to be tailored to the user's needs.
 Plugins can either run in the background, add pages, or both. Pages are derived from tkinter tk.Frame objects so you can use them to build anything you could build in a normal tkinter Frame.
 
+Plugins can also added manually by placing them in the `plugins` folder of appstore-workbench.
+Single-file plugins can be named `anything.py`, plugins with assets must be in folders, and must be called plugin.py
+The plugin system is non-recursive, meaning a plugin in `./plugins/plugin_folder/plugin_subfolder/plugin.py` would not be seen.
+
+##### Example plugin folder layout:
+```
+_appstore-workbench
+ |_plugins
+   |_pluginA.py
+   |_pluginB.py
+   |_pluginC
+   | |_plugin.py
+   |_pluginD
+     |_plugin.py
+```
+
 ##### Example Usage:
 ```py
-from gui.plugins import basePlugin
+from gui.widgets import basePlugin
 import os
 
 class Plugin(basePlugin.BasePlugin):
   def __init__(self, app, container):
-    super().__init__(self, app, "NAME", container)
+    super().__init__(self, app, "PLUGIN_NAME", container)
     self.app = app #gui object
     self.container = container #Parent frame for pages, classed from tk.Frame()
     #Declare any values you want available throughout your pages here
@@ -116,10 +133,10 @@ class Page(basePage.BasePage):
         relx = 0.5,
         x = - 50,
         width = 100,
-            rely = 0.5,
-            y = - 20
-            height = - 50 
-          )
+        rely = 0.5,
+        y = - 20
+        height = - 50 
+      )
 ```
 ## Threading
 Also included in this project is a worker thread tool I made
