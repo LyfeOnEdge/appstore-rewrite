@@ -14,3 +14,6 @@ class BasePlugin:
 	def exit(self):
 		"""Exit function to stop background tasks, you should re-define this in your subclassed objects"""
 		print("Exited the basePlugin")
+
+	def out(self, outobj):
+		print(f"{self.name} - {outobj}")

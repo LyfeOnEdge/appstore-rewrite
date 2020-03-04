@@ -20,7 +20,7 @@ class Appstore(libget_handler, parser, appstore_webhandler):
 	def load_repo(self):
 		repo = self.get_file()
 		if not repo:
-			raise "Failed to get repo"
+			print("Failed to get repo")
 		self.load_file(repo)
 
 	def get_file(self):

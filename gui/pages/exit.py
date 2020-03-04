@@ -10,7 +10,7 @@ class exitPage(tk.Frame):
 		self.name = "EXIT"
 		self.app = app
 		tk.Frame.__init__(self,parent,background=style.primary_color)
-		self.exit_callback = threader.exit
+		
 
 		self.usertext = themedLabel.ThemedLabel(self, text="Exit?", font = style.hugeboldtext, anchor = "center", background = style.primary_color, foreground = "white")
 		self.usertext.place(relwidth = 1, relheight = 1, height = - (style.buttonsize + 2 * style.offset))
@@ -23,12 +23,7 @@ class exitPage(tk.Frame):
 
 	def on_yes(self):
 		print("Exiting...")
-		for plugin in self.app.plugins:
-			plugin.exit()
-			
-		if self.exit_callback:
-			self.exit_callback()
-		sys.exit()
+		self.app.exit()
 
 def setup(app, container):
 	return exitPage(app, container)

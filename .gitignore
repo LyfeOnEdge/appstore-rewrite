@@ -1,7 +1,7 @@
 *.pyc
-cache/*
-tools/*
-downloads/*
+/cache/*
+/tools*
+/downloads/*
 build.zip
-config.py
-plugins*
+/config.py
+/plugins*

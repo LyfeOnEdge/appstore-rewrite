@@ -39,7 +39,7 @@ class Plugin(basePlugin.BasePlugin):
 		self.app = app
 		self.container = container
 		self.handler = Appstore("plugins", PAYLOAD_REPO, LIBGET_DIR)
-		self.handler.set_path("gui/plugins")
+		self.handler.set_path("plugins")
 		if not self.handler.check_if_get_init(silent = True):
 			self.handler.init_get()
 

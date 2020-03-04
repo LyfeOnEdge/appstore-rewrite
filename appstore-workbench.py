@@ -72,7 +72,7 @@ def startGUI(args=None):
     # frameManager serves to load all pages and stack them on top of each other (all 2 of them)
     # also serves to make many important objects and functions easily
     # available to children frames
-    app = window(args, geometry = "900x400")
+    app = window(args, geometry = "900x400", version = version)
 
     # Set title formatted with version
     app.set_version(version_string)
@@ -92,8 +92,7 @@ def startGUI(args=None):
             try:
                 app.statepages(opt.strip("-"))
             except Exception as e:
-                pribnt(
-                    "Error setting window launch type for Windows, this is a bug please report it:\n     {}".format(e))
+                print("Error setting window launch type for Windows, this is a bug please report it:\n     {}".format(e))
         else:
             app.attributes(opt, True)
 

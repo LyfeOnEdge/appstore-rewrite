@@ -8,7 +8,7 @@ from asyncthreader import threader
 
 #Frame handler, raises and pages in z layer,
 class window(tk.Tk):
-	def __init__(self, args, geometry):
+	def __init__(self, args, geometry, version):
 		tk.Tk.__init__(self)
 		self.configure(background = style.primary_color)
 		self.geometry(geometry)
@@ -20,6 +20,7 @@ class window(tk.Tk):
 		self.pagelist = []
 		self.has_update = None
 		self.plugins = []
+		self.version = version
 		# self.resizable(False, False)
 
 		self.detail_page = DetailPage(self)
@@ -148,7 +149,6 @@ class window(tk.Tk):
 			try:
 				print(f"Loading plugin at {plugin}")
 				plugin = plugin[:-3].replace("/", ".")[1:]
-				print(plugin)
 				m = importlib.import_module(plugin)	#Import plugin
 				plugin_object = m.setup(self, self.container) #Import lib and call setup to get plugin object
 				pluginlist.append(plugin_object)
@@ -218,3 +218,9 @@ class window(tk.Tk):
 		else:
 			basepath = "Not Set"
 		self.column_sd_status_label.set("SD - {}".format(basepath))
+
+	def exit(self):
+		for plugin in self.plugins:
+			plugin.exit()
+		threader.exit()
+		sys.exit()
